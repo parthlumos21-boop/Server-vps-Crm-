@@ -1,0 +1,242 @@
+.btn {
+  --btn-shade-start: #2563eb;
+  --btn-shade-mid: #14b8a6;
+  --btn-shade-end: #f97316;
+  --btn-hover-bg: color-mix(in srgb, var(--btn-shade-start) 88%, #000000);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  gap: 0.5rem;
+  overflow: hidden;
+  min-height: 2.2rem;
+  padding: 0.48rem 0.88rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: none;
+}
+
+.btn:active:not(:disabled) {
+  /* No animation */
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Primary — Dark Charcoal */
+.btn-primary {
+  --btn-shade-start: #2563eb;
+  --btn-shade-mid: #14b8a6;
+  --btn-shade-end: #f97316;
+  --btn-hover-bg: linear-gradient(135deg, #1d4ed8 0%, #0f766e 54%, #ea580c 100%);
+  background: linear-gradient(135deg, var(--btn-shade-start) 0%, var(--btn-shade-mid) 54%, var(--btn-shade-end) 100%);
+  color: #fff;
+  border-color: color-mix(in srgb, var(--btn-shade-start) 66%, var(--btn-shade-mid));
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-hover-bg);
+  border-color: color-mix(in srgb, var(--btn-shade-start) 76%, #000000);
+  box-shadow: var(--shadow-md);
+}
+
+/* Secondary */
+.btn-secondary {
+  --btn-shade-start: rgba(37, 99, 235, 0.12);
+  --btn-shade-mid: rgba(20, 184, 166, 0.14);
+  --btn-shade-end: rgba(249, 115, 22, 0.14);
+  background: linear-gradient(135deg, var(--btn-shade-start), var(--btn-shade-mid), var(--btn-shade-end)), var(--surface-card);
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--border-default) 74%, #14b8a6);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(20, 184, 166, 0.2), rgba(249, 115, 22, 0.2)), var(--surface-muted);
+  border-color: color-mix(in srgb, var(--border-strong) 70%, #2563eb);
+  color: var(--text-primary);
+}
+
+/* Success */
+.btn-success {
+  --btn-shade-start: #16a34a;
+  --btn-shade-mid: #0d9488;
+  --btn-shade-end: #2563eb;
+  background: linear-gradient(135deg, var(--btn-shade-start), var(--btn-shade-mid), var(--btn-shade-end));
+  color: #fff;
+  border-color: #0d9488;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #15803d, #0f766e, #1d4ed8);
+  border-color: #0f766e;
+  box-shadow: var(--shadow-md);
+}
+
+/* Danger */
+.btn-danger {
+  --btn-shade-start: #dc2626;
+  --btn-shade-mid: #f97316;
+  --btn-shade-end: #7c3aed;
+  background: linear-gradient(135deg, var(--btn-shade-start), var(--btn-shade-mid), var(--btn-shade-end));
+  color: #fff;
+  border-color: #dc2626;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b91c1c, #ea580c, #6d28d9);
+  box-shadow: var(--shadow-md);
+}
+
+/* Outline */
+.btn-outline {
+  --btn-shade-start: rgba(37, 99, 235, 0.08);
+  --btn-shade-mid: rgba(20, 184, 166, 0.1);
+  --btn-shade-end: rgba(249, 115, 22, 0.1);
+  background: linear-gradient(135deg, var(--btn-shade-start), var(--btn-shade-mid), var(--btn-shade-end));
+  border-color: color-mix(in srgb, var(--border-default) 70%, #f97316);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+}
+
+/* Ghost */
+.btn-ghost {
+  --btn-shade-start: rgba(37, 99, 235, 0.06);
+  --btn-shade-mid: rgba(20, 184, 166, 0.08);
+  --btn-shade-end: rgba(249, 115, 22, 0.08);
+  background: linear-gradient(135deg, var(--btn-shade-start), var(--btn-shade-mid), var(--btn-shade-end));
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+/* Sizes */
+.btn-small {
+  min-height: 1.9rem;
+  padding: 0.36rem 0.7rem;
+  font-size: 0.74rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-medium {
+  padding: 0.52rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.btn-large {
+  min-height: 2.5rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-full-width {
+  width: 100%;
+}
+
+.btn-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn-spinner {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-icon,
+.btn-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.btn-icon {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.btn-text {
+  min-width: 0;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .btn {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .btn-text {
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Night Theme Button Overrides */
+[data-theme="dark"] .btn-primary, [data-theme="dark"] button.btn-primary {
+  background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 52%, #fb923c 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(45, 212, 191, 0.62) !important;
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.24) !important;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 52%, #f97316 100%) !important;
+}
+
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn-outline,
+[data-theme="dark"] .btn-ghost {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(45, 212, 191, 0.14), rgba(251, 146, 60, 0.12)), var(--surface-raised) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(148, 163, 184, 0.34) !important;
+}
+
+[data-theme="dark"] :is(.btn-secondary, .btn-outline, .btn-ghost):hover:not(:disabled) {
+  background: var(--surface-card) !important;
+}
