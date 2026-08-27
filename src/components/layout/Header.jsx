@@ -217,12 +217,6 @@ const Header = ({ isAdmin = false, isSidebarOpen = false, onToggleSidebar }) => 
   }
 
   const handleOpenSearchPanel = () => {
-    if (!isAdmin) {
-      closeHeaderPanels()
-      navigate('/support-requests/search')
-      return
-    }
-
     setMenuOpen(false)
     setReminderPanelOpen(false)
     setQuickAddOpen(false)
@@ -261,7 +255,7 @@ const Header = ({ isAdmin = false, isSidebarOpen = false, onToggleSidebar }) => 
       return
     }
 
-    navigate(trimmedSearchTerm ? `/support-requests/search?query=${encodeURIComponent(trimmedSearchTerm)}` : '/support-requests/search')
+    navigate(trimmedSearchTerm ? `/search?query=${encodeURIComponent(trimmedSearchTerm)}` : '/search')
   }
 
   const handleQuickSearch = () => {
@@ -388,7 +382,7 @@ const Header = ({ isAdmin = false, isSidebarOpen = false, onToggleSidebar }) => 
                 <FaSearch />
               </button>
 
-              {isAdmin && searchPanelOpen && (
+              {searchPanelOpen && (
                 <div className="hdr-popover-panel hdr-search-panel">
                   <div className="hdr-search-input-row">
                     <div className="hdr-search-input-wrap">
