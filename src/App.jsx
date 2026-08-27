@@ -166,6 +166,7 @@ function App() {
                 <Route path="home" element={<Navigate to={DASHBOARD_ROUTES.user} replace />} />
                 <Route path="dashboard" element={<UserDashboardPage />} />
                 <Route path="monitoring" element={<UserDashboardPage />} />
+                <Route path="search" element={<AdminAdvancedSearchPage />} />
                 <Route path="accounts/new" element={<AddAccountWizard />} />
                 <Route path="accounts" element={<Accounts />} />
                 <Route path="accounts/search" element={<MyGroupAccountsPage variantKey="searchAccount" />} />

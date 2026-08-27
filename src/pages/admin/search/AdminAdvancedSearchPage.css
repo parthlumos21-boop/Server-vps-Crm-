@@ -78,6 +78,30 @@
   font-weight: 700;
 }
 
+html:not([data-theme="dark"]) body #root .admin-search-page .admin-search-header h1 {
+  color: #111827;
+}
+
+html:not([data-theme="dark"]) body #root .admin-search-page .admin-search-header p {
+  color: #374151;
+}
+
+html:not([data-theme="dark"]) body #root .admin-search-page .admin-search-section-title {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border-bottom: 1px solid red !important;
+  color: #111827 !important;
+}
+
+html:not([data-theme="dark"]) body #root .admin-search-page .admin-search-section-table thead th {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 1px solid red !important;
+  color: #111827 !important;
+}
+
 .admin-search-section-table tbody tr:nth-child(even) {
   background: var(--surface-card);
 }
@@ -312,4 +336,30 @@
   .admin-search-account-actions {
     justify-self: start;
   }
+}
+
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-header h1,
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-section-title,
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-section-table thead tr th {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-header p {
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+}
+
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-section-title {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border-bottom: 1px solid red !important;
+}
+
+html:not([data-theme="dark"]) body #root :is(.layout--admin, .layout--user) .admin-search-page .admin-search-section-table thead tr th {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 1px solid red !important;
 }

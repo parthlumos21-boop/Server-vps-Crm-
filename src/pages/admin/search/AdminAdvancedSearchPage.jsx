@@ -99,6 +99,11 @@ const buildDealContacts = (deal) => [{
   || contact.phone !== '-'
 ))
 
+const formatOwnerCodeOnly = (ownerCode) => {
+  const cleanOwnerCode = String(ownerCode || '').trim()
+  return cleanOwnerCode && cleanOwnerCode !== '-' ? cleanOwnerCode : '-'
+}
+
 const renderRecordLinkContent = (column, row, value) => {
   return value
 }
@@ -229,18 +234,9 @@ const AdminAdvancedSearchPage = () => {
       .map((account) => {
         const rawOwner = account.accountOwnerDisplay || account.accountOwnerName || account.accountOwner || '';
         const liveOwnerCode = resolveOwnerCode(rawOwner, account.accountOwnerCode || getCrmOwnerCode(rawOwner));
-        const rawAccNo = account.accountNumber || account.accountNo || account.account_no || account.raw?.accountNumber || account.raw?.accountNo || '';
-        const cleanAccNo = (liveOwnerCode && rawAccNo.startsWith(liveOwnerCode + '-')) 
-          ? rawAccNo.slice(liveOwnerCode.length + 1) 
-          : (liveOwnerCode && rawAccNo.startsWith(liveOwnerCode)) 
-            ? rawAccNo.slice(liveOwnerCode.length) 
-            : rawAccNo;
-        const finalAccountNumber = (liveOwnerCode && cleanAccNo) 
-          ? `${liveOwnerCode}-${cleanAccNo}` 
-          : cleanAccNo || liveOwnerCode || '-';
         return {
           id: account.id,
-          accountNumber: finalAccountNumber,
+          accountNumber: formatOwnerCodeOnly(liveOwnerCode),
           accountName: account.name || '-',
           projectName: account.projectName || '-',
           email: account.email || '-',
@@ -256,19 +252,10 @@ const AdminAdvancedSearchPage = () => {
       .flatMap((account) => buildAccountContacts(account))
       .map((contact) => {
         const liveOwnerCode = resolveOwnerCode(contact.accountOwner, contact.accountOwnerCode);
-        const rawAccNo = contact.accountNumber || '';
-        const cleanAccNo = (liveOwnerCode && rawAccNo.startsWith(liveOwnerCode + '-')) 
-          ? rawAccNo.slice(liveOwnerCode.length + 1) 
-          : (liveOwnerCode && rawAccNo.startsWith(liveOwnerCode)) 
-            ? rawAccNo.slice(liveOwnerCode.length) 
-            : rawAccNo;
-        const finalAccountNumber = (liveOwnerCode && cleanAccNo) 
-          ? `${liveOwnerCode}-${cleanAccNo}` 
-          : cleanAccNo || liveOwnerCode || '-';
         return {
           ...contact,
           accountOwnerCode: liveOwnerCode,
-          accountNumber: finalAccountNumber,
+          accountNumber: formatOwnerCodeOnly(liveOwnerCode),
         }
       })
       .filter((contact) => matchesQuery(normalizedSearchQuery, [
@@ -289,18 +276,9 @@ const AdminAdvancedSearchPage = () => {
         const primaryContact = getPrimaryCustomerContact(customer)
         const rawOwner = customer.customerOwnerDisplay || getCrmOwnerDisplay(customer.customerOwner) || customer.customerOwner || '';
         const ownerCode = resolveOwnerCode(rawOwner, getCrmOwnerCode(rawOwner));
-        const rawCustomerNo = customer.customerNumber || customer.customerNo || customer.customer_no || customer.raw?.customerNumber || customer.raw?.customerNo || customer.id || '';
-        const cleanCustomerNo = (ownerCode && rawCustomerNo.startsWith(ownerCode + '-'))
-          ? rawCustomerNo.slice(ownerCode.length + 1)
-          : (ownerCode && rawCustomerNo.startsWith(ownerCode))
-            ? rawCustomerNo.slice(ownerCode.length)
-            : rawCustomerNo;
-        const finalCustomerNo = (ownerCode && cleanCustomerNo)
-          ? `${ownerCode}-${cleanCustomerNo}`
-          : cleanCustomerNo || ownerCode || '-';
         return {
           id: customer.id,
-          customerNumber: finalCustomerNo,
+          accountNumber: formatOwnerCodeOnly(ownerCode),
           customerName: customer.customerName || '-',
           email: primaryContact.email || '-',
           phone: primaryContact.mobile || primaryContact.phone || '-',
@@ -309,7 +287,7 @@ const AdminAdvancedSearchPage = () => {
         }
       })
       .filter((customer) => matchesQuery(normalizedSearchQuery, [
-        customer.customerNumber,
+        customer.accountNumber,
         customer.customerName,
         customer.email,
         customer.phone,
@@ -324,22 +302,13 @@ const AdminAdvancedSearchPage = () => {
         const parentCustomer = customers.find(c => c.id === contact.customerId) || {};
         const rawOwner = parentCustomer.customerOwnerDisplay || getCrmOwnerDisplay(parentCustomer.customerOwner) || parentCustomer.customerOwner || '';
         const ownerCode = resolveOwnerCode(rawOwner, getCrmOwnerCode(rawOwner));
-        const rawCustomerNo = contact.customerNumber || '';
-        const cleanCustomerNo = (ownerCode && rawCustomerNo.startsWith(ownerCode + '-'))
-          ? rawCustomerNo.slice(ownerCode.length + 1)
-          : (ownerCode && rawCustomerNo.startsWith(ownerCode))
-            ? rawCustomerNo.slice(ownerCode.length)
-            : rawCustomerNo;
-        const finalCustomerNo = (ownerCode && cleanCustomerNo)
-          ? `${ownerCode}-${cleanCustomerNo}`
-          : cleanCustomerNo || ownerCode || '-';
         return {
           ...contact,
-          customerNumber: finalCustomerNo,
+          accountNumber: formatOwnerCodeOnly(ownerCode),
         }
       })
       .filter((contact) => matchesQuery(normalizedSearchQuery, [
-        contact.customerNumber,
+        contact.accountNumber,
         contact.customerName,
         contact.contactPerson,
         contact.email,
@@ -353,18 +322,9 @@ const AdminAdvancedSearchPage = () => {
       .map((deal) => {
         const rawOwner = deal.dealOwnerDisplay || getCrmOwnerDisplay(deal.dealOwner) || deal.dealOwner || '';
         const ownerCode = resolveOwnerCode(rawOwner, getCrmOwnerCode(rawOwner));
-        const rawDealNo = deal.dealNumber || deal.deal_number || deal.dealNo || deal.deal_no || deal.id || '';
-        const cleanDealNo = (ownerCode && rawDealNo.startsWith(ownerCode + '-'))
-          ? rawDealNo.slice(ownerCode.length + 1)
-          : (ownerCode && rawDealNo.startsWith(ownerCode))
-            ? rawDealNo.slice(ownerCode.length)
-            : rawDealNo;
-        const finalDealNo = (ownerCode && cleanDealNo)
-          ? `${ownerCode}-${cleanDealNo}`
-          : cleanDealNo || ownerCode || '-';
         return {
           id: deal.id,
-          dealNumber: finalDealNo,
+          accountNumber: formatOwnerCodeOnly(ownerCode),
           dealName: deal.name || deal.projectName || '-',
           customerName: deal.customerName || '-',
           dealOwner: rawOwner || '-',
@@ -373,7 +333,7 @@ const AdminAdvancedSearchPage = () => {
         }
       })
       .filter((deal) => matchesQuery(normalizedSearchQuery, [
-        deal.dealNumber,
+        deal.accountNumber,
         deal.dealName,
         deal.customerName,
         deal.dealOwner,
@@ -388,22 +348,13 @@ const AdminAdvancedSearchPage = () => {
         const parentDeal = deals.find(d => d.id === contact.dealId) || {};
         const rawOwner = parentDeal.dealOwnerDisplay || getCrmOwnerDisplay(parentDeal.dealOwner) || parentDeal.dealOwner || '';
         const ownerCode = resolveOwnerCode(rawOwner, getCrmOwnerCode(rawOwner));
-        const rawDealNo = contact.dealNumber || '';
-        const cleanDealNo = (ownerCode && rawDealNo.startsWith(ownerCode + '-'))
-          ? rawDealNo.slice(ownerCode.length + 1)
-          : (ownerCode && rawDealNo.startsWith(ownerCode))
-            ? rawDealNo.slice(ownerCode.length)
-            : rawDealNo;
-        const finalDealNo = (ownerCode && cleanDealNo)
-          ? `${ownerCode}-${cleanDealNo}`
-          : cleanDealNo || ownerCode || '-';
         return {
           ...contact,
-          dealNumber: finalDealNo,
+          accountNumber: formatOwnerCodeOnly(ownerCode),
         }
       })
       .filter((contact) => matchesQuery(normalizedSearchQuery, [
-        contact.dealNumber,
+        contact.accountNumber,
         contact.dealName,
         contact.customerName,
         contact.contactPerson,
@@ -417,7 +368,10 @@ const AdminAdvancedSearchPage = () => {
       const accountProjects = Array.isArray(account.raw?.projects) ? account.raw.projects : []
       return accountProjects.map((project, index) => ({
         id: project.id || `${account.id}-project-${index}`,
-        projectCode: project.projectCode || '-',
+        accountNumber: formatOwnerCodeOnly(resolveOwnerCode(
+          account.accountOwnerDisplay || account.accountOwnerName || account.accountOwner,
+          account.accountOwnerCode || getCrmOwnerCode(account.accountOwnerDisplay || account.accountOwnerName || account.accountOwner)
+        )),
         projectName: project.projectName || account.projectName || '-',
         accountName: account.name || '-',
         consultantName: project.consultantName || account.consultantName || '-',
@@ -431,9 +385,13 @@ const AdminAdvancedSearchPage = () => {
 
     const projectMasterRows = (projects || []).map((project) => {
       const linkedAccount = normalizedAccounts.find((account) => String(account.id) === String(project.accountId))
+      const linkedOwner = linkedAccount?.accountOwnerDisplay || linkedAccount?.accountOwnerName || linkedAccount?.accountOwner || project.accountOwner || project.ownerName || ''
       return {
         id: project.id || project.projectId,
-        projectCode: project.projectCode || '-',
+        accountNumber: formatOwnerCodeOnly(resolveOwnerCode(
+          linkedOwner,
+          linkedAccount?.accountOwnerCode || getCrmOwnerCode(linkedOwner)
+        )),
         projectName: project.projectName || '-',
         accountName: project.accountName || linkedAccount?.name || '-',
         consultantName: project.consultantName || '-',
@@ -452,7 +410,7 @@ const AdminAdvancedSearchPage = () => {
 
     return Array.from(rowsById.values())
       .filter((project) => matchesQuery(normalizedSearchQuery, [
-        project.projectCode,
+        project.accountNumber,
         project.projectName,
         project.accountName,
         project.consultantName,
@@ -461,7 +419,7 @@ const AdminAdvancedSearchPage = () => {
         project.projectStatus,
         project.projectLocation,
       ]))
-  }, [normalizedAccounts, normalizedSearchQuery, projects])
+  }, [normalizedAccounts, normalizedSearchQuery, projects, dbMongoUsers])
 
   const handleOpenCustomer = (customerId) => {
     navigate(`/admin/customers/view/${encodeURIComponent(customerId)}`)
@@ -599,35 +557,36 @@ const AdminAdvancedSearchPage = () => {
       { key: 'designation', label: 'Designation' },
     ],
     customers: [
-      { key: 'customerNumber', label: 'Customer No.', isRecordNumber: true, onClick: (row) => handleOpenCustomer(row.customer.id) },
+      { key: 'accountNumber', label: 'Account No.', isRecordNumber: true, onClick: (row) => handleOpenCustomer(row.customer.id) },
       { key: 'customerName', label: 'Customer Name' },
       { key: 'email', label: 'Email' },
       { key: 'phone', label: 'Phone' },
       { key: 'customerOwner', label: 'Customer Owner' },
     ],
     customerContacts: [
-      { key: 'customerNumber', label: 'Customer No.', isRecordNumber: true, onClick: (row) => handleOpenCustomer(row.customerId) },
+      { key: 'accountNumber', label: 'Account No.', isRecordNumber: true, onClick: (row) => handleOpenCustomer(row.customerId) },
       { key: 'contactPerson', label: 'Contact Person' },
       { key: 'email', label: 'Email' },
       { key: 'phone', label: 'Phone' },
       { key: 'designation', label: 'Designation' },
     ],
     deals: [
-      { key: 'dealNumber', label: 'Deal No.', isRecordNumber: true, onClick: (row) => handleOpenDeal(row.id) },
+      { key: 'accountNumber', label: 'Account No.', isRecordNumber: true, onClick: (row) => handleOpenDeal(row.id) },
       { key: 'dealName', label: 'Deal Name' },
       { key: 'customerName', label: 'Customer Name' },
       { key: 'dealOwner', label: 'Deal Owner' },
       { key: 'status', label: 'Status' },
     ],
     dealContacts: [
-      { key: 'dealNumber', label: 'Deal No.', isRecordNumber: true, onClick: (row) => handleOpenDeal(row.dealId) },
+      { key: 'accountNumber', label: 'Account No.', isRecordNumber: true, onClick: (row) => handleOpenDeal(row.dealId) },
       { key: 'contactPerson', label: 'Contact Person' },
       { key: 'email', label: 'Email' },
       { key: 'phone', label: 'Phone' },
       { key: 'customerName', label: 'Customer Name' },
     ],
     projects: [
-      { key: 'projectName', label: 'Project Name', isRecordNumber: true, onClick: (row) => handleOpenProject(row.id) },
+      { key: 'accountNumber', label: 'Account No.', isRecordNumber: true, onClick: (row) => handleOpenProject(row.id) },
+      { key: 'projectName', label: 'Project Name' },
       { key: 'accountName', label: 'Account Name' },
       { key: 'consultantName', label: 'Consultant' },
       { key: 'architectName', label: 'Architect' },
