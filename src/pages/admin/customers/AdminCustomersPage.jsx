@@ -30,7 +30,7 @@ import {
   FaUserPlus,
   FaUserTie,
 } from 'react-icons/fa'
-import { FiLayers } from 'react-icons/fi'
+import { FiLayers, FiEdit2 } from 'react-icons/fi'
 import { CUSTOMER_ACTION_MAP } from '../../../features/adminCustomers/config/customerActions'
 
 import {
@@ -44,7 +44,6 @@ import { useClickOutside } from '../../../hooks'
 import { getCrmOwnerDisplay, isSameCrmOwner } from '../../../features/users/crmUserDirectory'
 import { exportExcelWorkbook } from '../../../utils/excelExport'
 import CustomerBulkActionDialog from './CustomerBulkActionDialog'
-import CustomerDetailsDrawer from './CustomerDetailsDrawer'
 import './AdminCustomersPage.css'
 
 const steps = [
@@ -802,6 +801,7 @@ const AdminCustomersPage = ({
 
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState(() => buildInitialFormData(defaultOwner))
+  const [myCustomerSearchQuery, setMyCustomerSearchQuery] = useState('')
   const [errors, setErrors] = useState({})
   const [saveMessage, setSaveMessage] = useState('')
   const [filters, setFilters] = useState(() => buildInitialFilters())
@@ -818,11 +818,12 @@ const AdminCustomersPage = ({
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([])
   const [isBulkMenuOpen, setIsBulkMenuOpen] = useState(false)
   const [bulkDialogActionKey, setBulkDialogActionKey] = useState('')
-  const [drawerCustomerId, setDrawerCustomerId] = useState('')
-  const [drawerInitialActionKey, setDrawerInitialActionKey] = useState('')
   const [customers, setCustomers] = useState(() => customerService.getCustomers())
   const [isCustomersLoading, setIsCustomersLoading] = useState(false)
   const [customersError, setCustomersError] = useState('')
+  const [editingField, setEditingField] = useState(null)
+  const [editingValue, setEditingValue] = useState('')
+  const [isSavingInlineField, setIsSavingInlineField] = useState(false)
   const [isSavingCustomer, setIsSavingCustomer] = useState(false)
   const [editingProfileField, setEditingProfileField] = useState('')
   const [profileEditData, setProfileEditData] = useState(() => buildManageProfileData())
@@ -879,13 +880,6 @@ const AdminCustomersPage = ({
 
     return customer
   }, [customers, restrictToOwner, routeCustomerId, user])
-  const drawerCustomer = useMemo(() => {
-    if (!drawerCustomerId) {
-      return null
-    }
-
-    return allCustomers.find((customer) => customer.id === drawerCustomerId) || null
-  }, [allCustomers, drawerCustomerId])
   const externalReturnTo = useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     return searchParams.get('returnTo') || location.state?.returnTo || ''
@@ -1172,6 +1166,24 @@ const AdminCustomersPage = ({
   }, [filterDraft.field, searchRows])
   const filteredRows = useMemo(() => (
     searchRows.filter((row) => {
+      if (myCustomerSearchQuery) {
+        const query = normalizeSearchValue(myCustomerSearchQuery)
+        const matchesName = normalizeSearchValue(row.customerName).includes(query)
+        const matchesNo = normalizeSearchValue(row.customerNumber).includes(query)
+        const matchesEmail = normalizeSearchValue(row.email).includes(query)
+        const matchesPhone = normalizeSearchValue(row.phone).includes(query)
+        const matchesAddedDate = normalizeSearchValue(row.addedDate).includes(query)
+        const matchesOwner = normalizeSearchValue(row.customerOwner).includes(query)
+        const matchesCategory = normalizeSearchValue(row.customerCategory).includes(query)
+        const matchesStatus = normalizeSearchValue(row.customerStatus).includes(query)
+        const matchesType = normalizeSearchValue(row.customerType).includes(query)
+        const matchesRemark = normalizeSearchValue(row.latestRemark).includes(query)
+        
+        if (!matchesName && !matchesNo && !matchesEmail && !matchesPhone && !matchesAddedDate && !matchesOwner && !matchesCategory && !matchesStatus && !matchesType && !matchesRemark) {
+          return false
+        }
+      }
+
       const matchesColumnFilters = searchColumns.every((column) => {
         const filterValue = normalizeSearchValue(filters[column.key])
         if (!filterValue) return true
@@ -1186,7 +1198,7 @@ const AdminCustomersPage = ({
         return rule.not ? !matchesRule : matchesRule
       })
     })
-  ), [filterRules, filters, searchRows])
+  ), [filterRules, filters, searchRows, myCustomerSearchQuery])
   const orderedRows = useMemo(() => {
     if (orderRules.length === 0) {
       return [...filteredRows].sort((left, right) => (
@@ -1269,12 +1281,6 @@ const AdminCustomersPage = ({
   }, [records])
 
   useEffect(() => {
-    if (variantKey !== 'search' && variantKey !== 'myCustomers' && highlightedCustomerId) {
-      setDrawerCustomerId(highlightedCustomerId)
-    }
-  }, [highlightedCustomerId, variantKey])
-
-  useEffect(() => {
     setCurrentPage(1)
   }, [filterRules, filters, orderRules, variantKey])
 
@@ -1298,15 +1304,9 @@ const AdminCustomersPage = ({
   }, [currentPageSafe, highlightedCustomerId, paginatedRows, variantKey])
 
   const handleOpenCustomerView = (id) => {
-    if (propVariantKey === 'search' || propVariantKey === 'myCustomers') {
-      navigate(buildViewUrl(id, currentGridUrl), {
-        state: { returnTo: currentGridUrl, highlightCustomerId: id },
-      })
-      return
-    }
-
-    setDrawerCustomerId(id)
-    setDrawerInitialActionKey('')
+    navigate(buildViewUrl(id, currentGridUrl), {
+      state: { returnTo: currentGridUrl, highlightCustomerId: id },
+    })
   }
 
   const handleOpenCustomerAction = (action, customerId) => {
@@ -1329,15 +1329,9 @@ const AdminCustomersPage = ({
     }
 
     if (INLINE_DRAWER_ACTION_KEYS.has(action.key)) {
-      if (variantKey === 'search' || variantKey === 'myCustomers' || variantKey === 'manage') {
-        navigate(buildActionUrl(action.key, customerId, actionReturnTo), {
-          state: { returnTo: actionReturnTo, highlightCustomerId: customerId },
-        })
-        return
-      }
-
-      setDrawerCustomerId(customerId)
-      setDrawerInitialActionKey(action.key)
+      navigate(buildActionUrl(action.key, customerId, actionReturnTo), {
+        state: { returnTo: actionReturnTo, highlightCustomerId: customerId },
+      })
       return
     }
 
@@ -1661,6 +1655,18 @@ const AdminCustomersPage = ({
                   ) : null}
                 </div>
               ) : null}
+
+              <div className="admin-customers-local-search-wrapper" style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                <label style={{ marginRight: '8px', fontSize: '14px', fontWeight: '500' }}>My Custmor</label>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={myCustomerSearchQuery}
+                  onChange={(e) => setMyCustomerSearchQuery(e.target.value)}
+                  className="admin-customers-input"
+                  style={{ width: '200px', height: '36px', padding: '0 12px' }}
+                />
+              </div>
 
               <button
                 type="button"
@@ -2000,37 +2006,6 @@ const AdminCustomersPage = ({
           {customersError ? <div className="admin-customers-save-message">{customersError}</div> : null}
         </section>
 
-        <CustomerDetailsDrawer
-          customer={drawerCustomer}
-          isOpen={Boolean(drawerCustomer)}
-          ownerOptions={ownerOptions}
-          showActions={showActionMenu}
-          onClose={() => {
-            setDrawerCustomerId('')
-            setDrawerInitialActionKey('')
-          }}
-          onSaveCustomerUpdates={handleSaveCustomerUpdates}
-          onManageCustomer={(customerId) => {
-            setDrawerCustomerId('')
-            setDrawerInitialActionKey('')
-            navigate(buildManageUrl(customerId, currentGridUrl), {
-              state: { returnTo: currentGridUrl, highlightCustomerId: customerId },
-            })
-          }}
-          onGenerateQuotation={(customerRecord) => {
-            setDrawerCustomerId('')
-            setDrawerInitialActionKey('')
-            navigate(quotationsPath, {
-              state: {
-                openGenerator: true,
-                preselectedCustomer: customerRecord,
-              },
-            })
-          }}
-
-          initialActionKey={drawerInitialActionKey}
-        />
-
         <CustomerBulkActionDialog
           actionKey={bulkDialogActionKey}
           isOpen={showActionMenu && Boolean(bulkDialogActionKey)}
@@ -2062,6 +2037,62 @@ const AdminCustomersPage = ({
       )
     }
 
+    const handleSaveInlineField = async (fieldKey, isPrimaryContact = false) => {
+      if (!editingField || isSavingInlineField) return;
+      setIsSavingInlineField(true);
+      try {
+        if (isPrimaryContact) {
+          const contacts = Array.isArray(currentCustomer.contacts) ? [...currentCustomer.contacts] : [primaryContact];
+          contacts[0] = { ...contacts[0], [fieldKey]: editingValue };
+          await customerService.saveCustomer({ ...currentCustomer, contacts });
+        } else {
+          await customerService.saveCustomer({ ...currentCustomer, [fieldKey]: editingValue });
+        }
+        setEditingField(null);
+        setEditingValue('');
+      } catch (err) {
+        console.error('Failed to save inline field', err);
+      } finally {
+        setIsSavingInlineField(false);
+      }
+    }
+
+    const renderViewField = (label, value, fieldKey, isPrimaryContact = false) => {
+      const isEditing = editingField === fieldKey;
+      return (
+        <div 
+          className="admin-customers-view-row"
+          onClick={() => {
+            if (!isEditing) {
+              setEditingField(fieldKey);
+              setEditingValue(value || '');
+            }
+          }}
+        >
+          <span>{label}</span>
+          {isEditing ? (
+            <input
+              type="text"
+              autoFocus
+              className="admin-customers-inline-input"
+              value={editingValue}
+              onChange={(e) => setEditingValue(e.target.value)}
+              onBlur={() => handleSaveInlineField(fieldKey, isPrimaryContact)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSaveInlineField(fieldKey, isPrimaryContact)
+                if (e.key === 'Escape') setEditingField(null)
+              }}
+            />
+          ) : (
+            <strong>
+              {value || '-'}
+              <FiEdit2 className="admin-customers-edit-icon" />
+            </strong>
+          )}
+        </div>
+      )
+    }
+
     return (
       <div className="admin-customers-page">
         <section className="admin-customers-card admin-customers-view-card">
@@ -2074,33 +2105,33 @@ const AdminCustomersPage = ({
             <div className="admin-customers-view-section">
               <h2>Customer Details</h2>
               <div className="admin-customers-view-list">
-                <div><span>Customer Name</span><strong>{currentCustomer.customerName || '-'}</strong></div>
-                <div><span>Added Date</span><strong>{currentCustomer.addedDate || '-'}</strong></div>
-                <div><span>Customer Owner</span><strong>{currentCustomer.customerOwnerDisplay || getCrmOwnerDisplay(currentCustomer.customerOwner) || '-'}</strong></div>
-                <div><span>Customer Category</span><strong>{currentCustomer.customerCategory || '-'}</strong></div>
-                <div><span>Customer Status</span><strong>{currentCustomer.customerStatus || '-'}</strong></div>
-                <div><span>Address</span><strong>{currentCustomer.address || '-'}</strong></div>
+                {renderViewField('Customer Name', currentCustomer.customerName, 'customerName')}
+                {renderViewField('Added Date', currentCustomer.addedDate, 'addedDate')}
+                {renderViewField('Customer Owner', currentCustomer.customerOwnerDisplay || getCrmOwnerDisplay(currentCustomer.customerOwner), 'customerOwner')}
+                {renderViewField('Customer Category', currentCustomer.customerCategory, 'customerCategory')}
+                {renderViewField('Customer Status', currentCustomer.customerStatus, 'customerStatus')}
+                {renderViewField('Address', currentCustomer.address, 'address')}
               </div>
             </div>
 
             <div className="admin-customers-view-section">
               <h2>Primary Contact</h2>
               <div className="admin-customers-view-list">
-                <div><span>Contact Person</span><strong>{primaryContact.contactPerson || '-'}</strong></div>
-                <div><span>Mobile</span><strong>{primaryContact.mobile || '-'}</strong></div>
-                <div><span>Phone</span><strong>{primaryContact.phone || '-'}</strong></div>
-                <div><span>Email</span><strong>{primaryContact.email || '-'}</strong></div>
-                <div><span>Designation</span><strong>{primaryContact.designation || '-'}</strong></div>
+                {renderViewField('Contact Person', primaryContact.contactPerson, 'contactPerson', true)}
+                {renderViewField('Mobile', primaryContact.mobile, 'mobile', true)}
+                {renderViewField('Phone', primaryContact.phone, 'phone', true)}
+                {renderViewField('Email', primaryContact.email, 'email', true)}
+                {renderViewField('Designation', primaryContact.designation, 'designation', true)}
               </div>
             </div>
 
             <div className="admin-customers-view-section">
               <h2>Reminder & Remarks</h2>
               <div className="admin-customers-view-list">
-                <div><span>Reminder Date</span><strong>{currentCustomer.reminderDate || '-'}</strong></div>
-                <div><span>Reminder Mode</span><strong>{currentCustomer.reminderMode || '-'}</strong></div>
-                <div><span>Remark</span><strong>{currentCustomer.remark || '-'}</strong></div>
-                <div><span>Description</span><strong>{currentCustomer.description || '-'}</strong></div>
+                {renderViewField('Reminder Date', currentCustomer.reminderDate, 'reminderDate')}
+                {renderViewField('Reminder Mode', currentCustomer.reminderMode, 'reminderMode')}
+                {renderViewField('Remark', currentCustomer.remark, 'remark')}
+                {renderViewField('Description', currentCustomer.description, 'description')}
               </div>
             </div>
           </div>
@@ -2108,13 +2139,6 @@ const AdminCustomersPage = ({
           <div className="admin-customers-form-actions">
             <button type="button" className="admin-customers-nav-button admin-customers-nav-button-secondary" onClick={handleBack}>
               Back
-            </button>
-            <button
-              type="button"
-              className="admin-customers-nav-button"
-              onClick={() => navigate(buildManageUrl(currentCustomer.id, returnTo))}
-            >
-              Manage Customer
             </button>
           </div>
         </section>
