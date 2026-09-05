@@ -1,0 +1,271 @@
+{
+  "database": "crm",
+  "collection": "users",
+  "count": 23,
+  "fields": [
+    "__v",
+    "_id",
+    "assignedPassword",
+    "assigned_password",
+    "authTokenVersion",
+    "auth_token_version",
+    "city",
+    "company",
+    "companyId",
+    "company_id",
+    "createdAt",
+    "designation",
+    "email",
+    "isApproved",
+    "isOnline",
+    "is_approved",
+    "is_online",
+    "lastLoginAt",
+    "legacyId",
+    "name",
+    "ownerCode",
+    "passwordHash",
+    "password_hash",
+    "refreshSessions",
+    "refreshTokenExpiresAt",
+    "refreshTokenHash",
+    "role",
+    "state",
+    "status",
+    "updatedAt",
+    "username"
+  ],
+  "sampleUsers": [
+    {
+      "name": "Nita Bhavsar",
+      "username": "nita-bhavsar",
+      "email": "mkt@swatiswitchgears.com",
+      "ownerCode": "1001",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 1
+    },
+    {
+      "name": "Krunal Patel",
+      "username": "krunal-patel",
+      "email": "mkt.brd@swatiswitchgears.com",
+      "ownerCode": "1002",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 2
+    },
+    {
+      "name": "Naim Vora",
+      "username": "naim-vora",
+      "email": "sales1@swatiswitchgears.com",
+      "ownerCode": "1003",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 3
+    },
+    {
+      "name": "Jay Pandya",
+      "username": "jay-pandya",
+      "email": "sales2@swatiswitchgears.com",
+      "ownerCode": "1004",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 4
+    },
+    {
+      "name": "Hasmukh Chauhan",
+      "username": "hasmukh-chauhan",
+      "email": "hasmukh@swatiswitchgears.com",
+      "ownerCode": "1005",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 5
+    },
+    {
+      "name": "VAIBHAVI PATEL",
+      "username": "vaibhavi-patel",
+      "email": "sales.ahd@swatiswitchgears.com",
+      "ownerCode": "1006",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 6
+    },
+    {
+      "name": "Atish Shah",
+      "username": "atish-shah",
+      "email": "automation.sales@swatiswitchgears.com",
+      "ownerCode": "1007",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 7
+    },
+    {
+      "name": "Kanubhai Shah",
+      "username": "kanubhai-shah",
+      "email": "kss@swatiswitchgears.com",
+      "ownerCode": "1008",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 8
+    },
+    {
+      "name": "Samir Jha",
+      "username": "samir-jha",
+      "email": "samir@swatiswitchgears.com",
+      "ownerCode": "1009",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 9
+    },
+    {
+      "name": "Rajeshree Parmar",
+      "username": "rajeshree-parmar",
+      "email": "sales.brd1@swatiswitchgears.com",
+      "ownerCode": "1010",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 10
+    },
+    {
+      "name": "Jagruti Parmar",
+      "username": "jagruti-parmar",
+      "email": "sales.brd2@swatiswitchgears.com",
+      "ownerCode": "1011",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 11
+    },
+    {
+      "name": "Monali Pateliya",
+      "username": "monali-pateliya",
+      "email": "sales.brd4@swatiswitchgears.com",
+      "ownerCode": "1012",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 12
+    },
+    {
+      "name": "Bhavesh Prajapati",
+      "username": "bhavesh-prajapati",
+      "email": "sales.brd5@swatiswitchgears.com",
+      "ownerCode": "1013",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 13
+    },
+    {
+      "name": "Samir Sheth",
+      "username": "samir-sheth",
+      "email": "samirsheth@swatiswitchgears.com",
+      "ownerCode": "1014",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 15
+    },
+    {
+      "name": "Keval V Shah",
+      "username": "kevalvshah",
+      "email": "keval@swatiswitchgears.com",
+      "ownerCode": "1015",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 16
+    },
+    {
+      "name": "Parth Crm Support",
+      "username": "parth-crm-support",
+      "email": "parth@support.com",
+      "ownerCode": "1016",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 17
+    },
+    {
+      "name": "Rushabh Crm Support",
+      "username": "rushabh-crm-support",
+      "email": "rushabh@support.com",
+      "ownerCode": "1017",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 18
+    },
+    {
+      "name": "Dev",
+      "username": "dev",
+      "email": "dev@swatiswitchgears.com",
+      "ownerCode": "1018",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 22
+    },
+    {
+      "name": "temp",
+      "username": "temp",
+      "email": "temp@swatiswitchgears.com",
+      "ownerCode": "2001",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 23
+    },
+    {
+      "name": "Sahana Prasenjit",
+      "username": "sahana-prasenjit",
+      "email": "sales.ahd@lumossolution.com",
+      "ownerCode": "2002",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 24
+    },
+    {
+      "name": "tempfilledstaff",
+      "username": "tempfilledstaff",
+      "email": "tempfilledstaff@swatiswitchgears.com",
+      "ownerCode": "",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 25
+    },
+    {
+      "name": "temptamilnadu",
+      "username": "temptamilnadu",
+      "email": "temptamilnadu@swatiswitchgears.com",
+      "ownerCode": "",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 26
+    },
+    {
+      "name": "Manager Test",
+      "username": "manager-test",
+      "email": "managertest@swatiswitchgears.com",
+      "ownerCode": "",
+      "owner_code": "",
+      "accountOwnerCode": "",
+      "employeeId": "",
+      "legacyId": 27
+    }
+  ]
+}
+
